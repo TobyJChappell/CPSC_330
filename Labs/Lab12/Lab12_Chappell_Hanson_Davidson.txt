@@ -1,0 +1,123 @@
+ module Counter_1HZ(
+    input clk_fpga,
+    input reset,
+    output [6:0] seg,
+    output [3:0] an,
+    output led
+    );
+   
+    parameter MAX_COUNT = 100_000_000-1;
+    wire   counter_en;
+    reg [26:0] counter_100M;
+    reg [3:0]  counter_10;
+   
+    assign an=4'b1110;
+   
+    display disp_1 (.digit(counter_10), .seven_seg(seg));
+   
+    always @(posedge clk_fpga, posedge reset)
+   
+       if (reset)
+            counter_100M <= 0;
+       else if (counter_100M == MAX_COUNT)
+            counter_100M <= 0;
+       else
+            counter_100M = counter_100M +1'b 1 ;
+   
+    assign counter_en=(counter_100M==0);
+   
+    always@(posedge clk_fpga, posedge reset)
+       if (reset)
+         counter_10 <= 0;
+       else if (counter_en)
+         if (counter_10  == 9)
+         counter_10 <= 0;
+         else
+         counter_10 <= counter_10 +1;
+       
+    assign led = (counter_10 ==9)   ;
+endmodule
+
+=====================================================
+module display(
+    output reg [6:0] seven_seg,
+    input [3:0] digit
+    );
+   
+   
+        parameter zero = 7'b 100_0000;
+        parameter one = 7'b 111_1001;
+        parameter two = 7'b 010_0100;          
+        parameter three = 7'b 011_0000;
+       
+        parameter four = 7'b 001_1001;
+        parameter five = 7'b 001_0010;        
+        parameter six = 7'b 000_0010;
+        parameter seven = 7'b 111_1000;
+       
+        parameter eight = 7'b 000_0000;
+        parameter nine = 7'b 001_0000;
+
+  always @ (digit)
+      case (digit)
+     
+      1'b0: seven_seg=zero;
+      1: seven_seg=one;
+      2: seven_seg=two;
+      3: seven_seg=three;
+     
+      4: seven_seg=four;
+      5: seven_seg=five;
+      6: seven_seg=six;
+      7: seven_seg=seven;
+     
+      8: seven_seg=eight;                  
+      9: seven_seg=nine;
+      default: seven_seg= zero;
+      endcase
+     
+         
+endmodule
+==============================================
+# Clock signal
+set_property PACKAGE_PIN W5 [get_ports clk_fpga]
+set_property IOSTANDARD LVCMOS33 [get_ports clk_fpga]
+create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk_fpga]
+
+# LEDs
+set_property PACKAGE_PIN U16 [get_ports led]                    
+    set_property IOSTANDARD LVCMOS33 [get_ports led]
+
+
+#7 segment display
+set_property PACKAGE_PIN W7 [get_ports {seg[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[0]}]
+set_property PACKAGE_PIN W6 [get_ports {seg[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[1]}]
+set_property PACKAGE_PIN U8 [get_ports {seg[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[2]}]
+set_property PACKAGE_PIN V8 [get_ports {seg[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[3]}]
+set_property PACKAGE_PIN U5 [get_ports {seg[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[4]}]
+set_property PACKAGE_PIN V5 [get_ports {seg[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[5]}]
+set_property PACKAGE_PIN U7 [get_ports {seg[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {seg[6]}]
+
+set_property PACKAGE_PIN U2 [get_ports {an[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {an[0]}]
+set_property PACKAGE_PIN U4 [get_ports {an[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {an[1]}]
+set_property PACKAGE_PIN V4 [get_ports {an[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {an[2]}]
+set_property PACKAGE_PIN W4 [get_ports {an[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {an[3]}]
+
+#Buttons
+set_property PACKAGE_PIN U18 [get_ports reset]
+set_propert IOSTANDARD LVCMOS33 [get_ports reset]
+
+set_property CFGBVS VCCO [current_design]
+
+set_property CONFIG_VOLTAGE 3.3 [current_design]

@@ -1,0 +1,117 @@
+Text of code for Decoder:
+decoder.sv
+
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company:
+// Engineer:
+//
+// Create Date: 05/12/2020 04:23:06 PM
+// Design Name:
+// Module Name: decoder
+// Project Name:
+// Target Devices:
+// Tool Versions:
+// Description:
+//
+// Dependencies:
+//
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+//
+//////////////////////////////////////////////////////////////////////////////////
+
+module decoder(
+  input [2:0] sw,
+  output reg [7:0] led
+  );
+
+always @(sw)
+	case (sw)
+    	3'b000: led = 8'b00000001;
+    	3'b001: led = 8'b00000010;
+    	3'b010: led = 8'b00000100;
+    	3'b011: led = 8'b00001000;
+    	3'b100: led = 8'b00010000;
+    	3'b101: led = 8'b00100000;
+    	3'b110: led = 8'b01000000;
+    	3'b111: led = 8'b10000000;
+    	default: led = 8'b00000000;
+    	endcase
+endmodule
+
+#########################
+
+decoder_tb.sv
+
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company:
+// Engineer:
+//
+// Create Date: 05/12/2020 04:32:09 PM
+// Design Name:
+// Module Name: decoder_tb
+// Project Name:
+// Target Devices:
+// Tool Versions:
+// Description:
+//
+// Dependencies:
+//
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+//
+//////////////////////////////////////////////////////////////////////////////////
+module decoder_tb(
+
+	);   
+logic [2:0] sw;
+logic  [7:0] led;
+  	 
+decoder decoder_uut(.sw(sw), .led(led));
+initial
+	begin
+    	sw = 3'b000; #100;
+    	sw = 3'b001; #100;
+    	sw = 3'b010; #100;
+    	sw = 3'b011; #100;
+    	sw = 3'b100; #100;
+    	sw = 3'b101; #100;
+    	sw = 3'b110; #100;
+    	sw = 3'b111; #100;
+	end
+endmodule
+
+
+###########################################################################
+decoder.xdc
+
+# Switches
+set_property PACKAGE_PIN V17 [get_ports {sw[0]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {sw[0]}]
+set_property PACKAGE_PIN V16 [get_ports {sw[1]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {sw[1]}]
+set_property PACKAGE_PIN W16 [get_ports {sw[2]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {sw[2]}]
+
+# LEDs
+set_property PACKAGE_PIN U16 [get_ports {led[0]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[0]}]
+set_property PACKAGE_PIN E19 [get_ports {led[1]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[1]}]   
+set_property PACKAGE_PIN U19 [get_ports {led[2]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[2]}]
+set_property PACKAGE_PIN V19 [get_ports {led[3]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[3]}]
+set_property PACKAGE_PIN W18 [get_ports {led[4]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[4]}]
+set_property PACKAGE_PIN U15 [get_ports {led[5]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[5]}]
+set_property PACKAGE_PIN U14 [get_ports {led[6]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[6]}]
+set_property PACKAGE_PIN V14 [get_ports {led[7]}]
+	set_property IOSTANDARD LVCMOS33[get_ports {led[7]}]
+
